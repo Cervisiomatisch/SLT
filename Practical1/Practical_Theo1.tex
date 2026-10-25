@@ -1,0 +1,240 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[ngerman]{babel}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{geometry}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\geometry{margin=25mm}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\Unif}{\operatorname{Uniform}}
+\newcommand{\Risk}{\mathcal{R}}
+\title{Problem Sheet 1 -- Lösung}
+\date{}
+\begin{document}
+\maketitle
+
+\section*{Part 1}
+\subsection*{1a) Regressionsproblem}
+Features X und Label Y mit jeweiligen Raum:
+\begin{align*}
+ X&=(U_1,U_2,\ldots,U_N), & X&\in(0,\infty)^N,\\
+ Y&=L, &Y&\in(0,\infty),\\
+ Z&=X\times Y, & Z&=(X,Y)\sim P_L.
+\end{align*}
+Dabei besteht die Ausgabe $X$ aus $N$ unabhängig und identisch verteilten
+Zufallsvariablen mit $U_i\sim\Unif(0,L)$.
+
+Für den quadratischen Verlust gilt
+\[
+ \ell(h(x),y)=(h(x)-y)^2.
+\]
+Das Populationsrisiko lautet
+\begin{align*}
+ \Risk_L(h)
+ &=\E\bigl[(h(X)-Y)^2\bigr]\\
+ &=\E\bigl[(h(U_1,\ldots,U_N)-L)^2\bigr].
+\end{align*}
+
+\subsection*{1b) Populationsrisiko der Hypothesen}
+\paragraph{(1) $h_1$}
+Es sei
+\[
+ h_1(U)=\frac{2}{N}\sum_{i=1}^{N}U_i,
+ \qquad \E(U_i)=\frac L2,
+ \qquad \Var(U_i)=\frac{L^2}{12}.
+\]
+Dann gilt
+\begin{align*}
+ \E[h_1(U)]
+ &=\frac{2}{N}\sum_{i=1}^{N}\E(U_i)
+ =\frac{2}{N}\cdot N\cdot\frac L2=L.
+\end{align*}
+Da $h_1$ erwartungstreu (= $L$) ist, entspricht das Risiko der Varianz:
+\begin{align*}
+ \Risk_L(h_1)
+ &=\Var(h_1(U))\\
+ &=\frac{4}{N^2}\Var\Bigl(\sum_{i=1}^{N}U_i\Bigr)\\
+ &=\frac{4}{N^2}\sum_{i=1}^{N}\Var(U_i)\\
+ &=\frac{4}{N^2}\cdot N\cdot\frac{L^2}{12}
+ =\boxed{\frac{L^2}{3N}}.
+\end{align*}
+Für $N=10$ ergibt sich
+\[
+ \boxed{\Risk_L(h_1)=\frac{L^2}{30}}.
+\]
+
+\paragraph{(2) $h_2$}
+Setze
+\[
+ \qquad h_2(U)=M
+ \qquad M=\max_{1\le i\le N}U_i,
+\]
+Damit folgt
+\begin{align*}
+ \Risk_L(h_2)
+ &=\E[(M-L)^2]\\
+ &=\E(M^2)-2L\E(M)+L^2.
+\end{align*}
+Das Maximum ist höchstens $t$, wenn jede einzelne Beobachtung höchstens $t$ ist. Also für eine Beobachtung
+\[
+ \Pr(U_i\le t)=\frac tL
+ \quad (0\le t\le L).
+\]
+Für alle Beobachtungen
+\[
+ \qquad
+ F_M(t)=\Pr(M\le t)=\left(\frac tL\right)^N
+ \quad (0\le t\le L).
+\]
+Ableiten der Verteilungsfunktion $F_M$ ergibt die Dichte
+\[
+ f_M(t)=F_M'(t)=\frac{Nt^{N-1}}{L^N},
+ \qquad (0\le t\le L).
+\]
+Zur Risikoberechnung werden $\E(M)$ und $\E(M^2)$ (siehe ausmultiplizierte Loss-Funktion) benötigt:
+\begin{align*}
+ \E(M)
+ &=\int_0^L t f_M(t)\,dt
+ =\frac{N}{L^N}\int_0^L t^N\,dt
+ =\frac{N}{L^N}\cdot\frac{L^{N+1}}{N+1}
+ =\frac{N}{N+1}L,\\[3pt]
+ \E(M^2)
+ &=\int_0^L t^2 f_M(t)\,dt
+ =\frac{N}{L^N}\int_0^L t^{N+1}\,dt
+ =\frac{N}{L^N}\cdot\frac{L^{N+2}}{N+2}
+ =\frac{N}{N+2}L^2.
+\end{align*}
+Daraus folgt
+\begin{align*}
+ \Risk_L(h_2)
+ &=\frac{N}{N+2}L^2-2L\frac{N}{N+1}L+L^2\\
+ &=L^2\left(\frac{N}{N+2}-\frac{2N}{N+1}+1\right)
+ =\boxed{\frac{2L^2}{(N+1)(N+2)}}.
+\end{align*}
+Für $N=10$ gilt
+\[
+ \boxed{\Risk_L(h_2)=\frac{2L^2}{11\cdot12}=\frac{L^2}{66}}.
+\]
+
+\paragraph{(3) $h_3$}
+Setze
+\[
+ \qquad h_3(U)=\frac{N+1}{N}M
+ \qquad M=\max_{1\le i\le N}U_i,
+\]
+Wie bereits berechnet, gelten
+\[
+ \E(M)=\frac{N}{N+1}L,
+ \qquad \E(M^2)=\frac{N}{N+2}L^2.
+\]
+Damit
+\[
+ \E[h_3(U)]
+ =\frac{N+1}{N}\E(M)
+ =\frac{N+1}{N}\cdot\frac{N}{N+1}L=L.
+\]
+$h_3$ ist erwartungstreu, weshalb
+\[
+ \Risk_L(h_3)=\Var(h_3(U)).
+\]
+Zunächst ergibt sich
+\begin{align*}
+ \Var(M)
+ &=\E(M^2)-[\E(M)]^2\\
+ &=\frac{N}{N+2}L^2-\frac{N^2}{(N+1)^2}L^2\\
+ &=\frac{NL^2}{(N+2)(N+1)^2}.
+\end{align*}
+Mit $\Var(aM)=a^2\Var(M)$ folgt
+\begin{align*}
+ \Risk_L(h_3)
+ &=\left(\frac{N+1}{N}\right)^2\Var(M)\\
+ &=\left(\frac{N+1}{N}\right)^2
+ \frac{NL^2}{(N+2)(N+1)^2}
+ =\boxed{\frac{L^2}{N(N+2)}}.
+\end{align*}
+Für $N=10$ gilt
+\[
+ \boxed{\Risk_L(h_3)=\frac{L^2}{10\cdot12}=\frac{L^2}{120}}.
+\]
+Somit gilt für $N=10$:
+\[
+ \boxed{
+ \Risk_L(h_3)=\frac{L^2}{120}
+ \le\Risk_L(h_2)=\frac{L^2}{66}
+ \le\Risk_L(h_1)=\frac{L^2}{30}}
+\]
+
+\section*{Part 2}
+\subsection*{2a) Problemstellung}
+\[
+ X=(U_1,U_2,\ldots,U_{10}),\qquad
+ X\in[1,5]^{10},\qquad
+ Y=L,\qquad Y\in[1,5].
+\]
+Hier ist $L\sim\Unif[1,5]$, und bedingt auf $L$ gilt
+$U_i\sim\Unif[0,L]$. Somit
+\[
+ Z=X\times Y,\qquad (X,Y)\sim P,
+ \qquad \ell(h(x),y)=(h(x)-y)^2.
+\]
+
+\subsection*{2b) Erwartetes Risiko}
+Für $N=10$ wurden in Teil 1 die bedingten Risiken berechnet:
+\[
+ \Risk_L(h_1)=\frac{L^2}{30},\qquad
+ \Risk_L(h_2)=\frac{L^2}{66},\qquad
+ \Risk_L(h_3)=\frac{L^2}{120}.
+\]
+Nun wird auch über die Zufallsvariable $L$ gemittelt:
+\begin{align*}
+ \Risk(h)
+ &=\E\bigl[\E[(h(U)-L)^2\mid L]\bigr]\\
+ &=\E_L[\Risk_L(h)].
+\end{align*}
+Da $L\sim\Unif[1,5]$, gilt
+\begin{align*}
+ \E(L^2)
+ &=\frac14\int_1^5 l^2\,dl
+ =\frac14\cdot\frac{125-1}{3}
+ =\frac{31}{3}.
+\end{align*}
+Damit ergeben sich
+\begin{align*}
+ \Risk(h_1)&=\frac1{30}\cdot\frac{31}{3}=\frac{31}{90},\\
+ \Risk(h_2)&=\frac1{66}\cdot\frac{31}{3}=\frac{31}{198},\\
+ \Risk(h_3)&=\frac1{120}\cdot\frac{31}{3}=\frac{31}{360}.
+\end{align*}
+Also
+\[
+ \boxed{\Risk(h_3)<\Risk(h_2)<\Risk(h_1)}.
+\]
+
+\subsection*{2c) Stichprobe und empirisches Risiko}
+Es sei
+\[
+ L_i\sim\Unif[1,5],\qquad
+ U_{i,1},\ldots,U_{i,10}\mid L_i
+ \overset{\mathrm{iid}}{\sim}\Unif[0,L_i].
+\]
+Weiterhin
+\[
+ X_i=(U_{i,1},\ldots,U_{i,10}),\qquad Y_i=L_i.
+\]
+Dabei bezeichnet $m$ die Anzahl unabhängig erzeugter gelabelter Beispiele;
+$N=10$ ist die Anzahl der Beobachtungen innerhalb eines Eingabevektors.
+Die Stichprobe lautet
+\[
+ D_m=\bigl((X_1,Y_1),\ldots,(X_m,Y_m)\bigr)\sim P^{\otimes m}.
+\]
+Für eine Hypothese $h\colon X\to Y$ ist das empirische Risiko
+\begin{align*}
+ \widehat{\Risk}_m(h)
+ &=\frac1m\sum_{i=1}^m\bigl(h(X_i)-Y_i\bigr)^2\\
+ &=\frac1m\sum_{i=1}^m
+ \bigl(h(U_{i,1},\ldots,U_{i,10})-L_i\bigr)^2.
+\end{align*}
+
+\end{document}
